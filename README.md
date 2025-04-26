@@ -1,4 +1,4 @@
-# 📘 README — Code Similarity Detection Project
+# 📘 Code Similarity Detection Project
 
 ## 📄 Project Description
 
