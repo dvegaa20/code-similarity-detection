@@ -1,4 +1,3 @@
-import pandas as pd
 import argparse
 from src.preprocessing import load_dataset, vectorize_corpus
 from src.similarity import calculate_similarity
@@ -25,7 +24,7 @@ def main(language):
     elif language.lower() == 'c':
         dataset_path = 'data/dataset_c_full.csv'
     else:
-        raise ValueError("Lenguaje no soportado. Usa 'java' o 'c'.")
+        raise ValueError("Unsupported language. Use 'java' or 'c'.")
 
     df = load_dataset(dataset_path)
 
@@ -45,7 +44,7 @@ def main(language):
     print(report)
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Sistema de detección de similitud de código.")
+    parser = argparse.ArgumentParser(description="Code similarity detection system.")
     parser.add_argument('--lang', type=str, required=True, help="Lenguaje: 'java' o 'c'")
     args = parser.parse_args()
 
