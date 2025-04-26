@@ -1,8 +1,8 @@
 import pandas as pd
 import argparse
-from modules.preprocessing import load_dataset, vectorize_corpus
-from modules.similarity import calculate_similarity
-from modules.model import train_model, evaluate_model
+from src.preprocessing import load_dataset, vectorize_corpus
+from src.similarity import calculate_similarity
+from src.model import train_model, evaluate_model
 
 def main(language):
     """
