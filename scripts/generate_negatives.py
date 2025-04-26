@@ -93,7 +93,7 @@ def generate_negatives(language):
 
     # List source files
     files = list_source_files(source_folder, extension)
-    print(f"Total archivos en {language.upper()}: {len(files)}")
+    print(f"Total files in {language.upper()}: {len(files)}")
 
     # Create a set of pairs already used to avoid repetition
     positive_codes = set(zip(positives['code1'], positives['code2']))
