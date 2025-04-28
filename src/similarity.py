@@ -1,24 +1,8 @@
-from sklearn.metrics.pairwise import cosine_similarity
+from torch.nn.functional import cosine_similarity
 
-def calculate_similarity(vectorizer, code1, code2):
+def calculate_similarity(emb1, emb2):
     """
-    Calcula la similitud entre dos codigos.
-
-    Parameters
-    ----------
-    vectorizer : TfidfVectorizer
-        El objeto que se utiliza para vectorizar el corpus.
-    code1 : str
-        El primer codigo.
-    code2 : str
-        El segundo codigo.
-
-    Returns
-    -------
-    float
-        La similitud entre los dos codigos.
+    Calculates the cosine similarity between two code embeddings.
     """
 
-    vec1 = vectorizer.transform([code1])
-    vec2 = vectorizer.transform([code2])
-    return cosine_similarity(vec1, vec2)[0][0]
+    return cosine_similarity(emb1, emb2, dim=0).item()
