@@ -28,11 +28,13 @@ def main(language):
 
     df = load_dataset(dataset_path)
 
-    corpus = df['code1'] + df['code2']
-    vectorizer, _ = vectorize_corpus(corpus)
+    code1_embeddings = vectorize_corpus(df['code1'])
+    code2_embeddings = vectorize_corpus(df['code2'])
 
-    # Calculate similarities
-    df['similarity'] = [calculate_similarity(vectorizer, row['code1'], row['code2']) for _, row in df.iterrows()]
+    df['similarity'] = [
+        calculate_similarity(code1_embeddings[idx], code2_embeddings[idx])
+        for idx in range(len(df))
+    ]
 
     # Prepare data for the model
     X = df[['similarity']]
