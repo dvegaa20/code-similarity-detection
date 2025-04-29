@@ -3,9 +3,30 @@ import torch
 from tqdm import tqdm
 from transformers import AutoTokenizer, AutoModel
 
-tokenizer = AutoTokenizer.from_pretrained("microsoft/unixcoder-base")
-model = AutoModel.from_pretrained("microsoft/unixcoder-base")
-model.eval()
+
+def load_model():
+    """
+    Loads the pre-trained UnixCoder model and tokenizer, and moves the model to the
+    GPU if available.
+
+    Returns
+    -------
+    tokenizer : transformers.AutoTokenizer
+        The pre-trained tokenizer.
+    model : transformers.AutoModel
+        The pre-trained model.
+    device : torch.device
+        The device where the model is loaded.
+    """
+
+    tokenizer = AutoTokenizer.from_pretrained("microsoft/unixcoder-base")
+    model = AutoModel.from_pretrained("microsoft/unixcoder-base")
+    model.eval()
+
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    model.to(device)
+
+    return tokenizer, model, device
 
 
 def load_dataset(filepath):
