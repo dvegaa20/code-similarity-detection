@@ -73,36 +73,48 @@ def mean_pooling(model_output, attention_mask):
     return sum_embeddings / sum_mask
 
 
-def vectorize_corpus(corpus):
+def vectorize_corpus(corpus, tokenizer, model, device, batch_size=16):
     """
-    Vectorizes a corpus of code snippets by encoding each snippet into a fixed-size embedding.
+    Vectorizes a corpus of text using a transformer model.
 
     Parameters
     ----------
     corpus : list of str
-        A list of code snippets to be encoded.
+        The corpus of text to vectorize.
+    tokenizer : transformers.PreTrainedTokenizer
+        The tokenizer to use for tokenizing the corpus.
+    model : transformers.PreTrainedModel
+        The transformer model to use for encoding the corpus.
+    device : torch.device
+        The device to use for encoding the corpus.
+    batch_size : int, optional
+        The batch size to use when encoding the corpus. Defaults to 16.
 
     Returns
     -------
     torch.Tensor
-        A tensor containing the embeddings for the entire corpus, where each
-        embedding corresponds to a code snippet.
+        The vectorized corpus, with shape (len(corpus), hidden_size).
     """
 
     embeddings = []
 
-    for code_snippet in tqdm(corpus, desc="Encoding corpus with mean pooling"):
+    for i in tqdm(
+        range(0, len(corpus), batch_size), desc="Encoding corpus with batching"
+    ):
+        batch = corpus[i : i + batch_size]
         with torch.no_grad():
             inputs = tokenizer(
-                code_snippet,
+                batch,
                 padding="max_length",
                 truncation=True,
                 max_length=512,
                 return_tensors="pt",
-            )
-            outputs = model(**inputs)
-            pooled_embedding = mean_pooling(outputs, inputs["attention_mask"])
-            embeddings.append(pooled_embedding.squeeze(0))
+            ).to(device)
 
-    embeddings = torch.stack(embeddings)
+            outputs = model(**inputs)
+            pooled_embeddings = mean_pooling(outputs, inputs["attention_mask"])
+
+            embeddings.append(pooled_embeddings)
+
+    embeddings = torch.cat(embeddings, dim=0)
     return embeddings
