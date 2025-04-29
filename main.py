@@ -1,7 +1,8 @@
 import argparse
-from src.preprocessing import load_dataset, vectorize_corpus
+from src.preprocessing import load_dataset, load_model, vectorize_corpus
 from src.similarity import calculate_similarity
 from src.model import train_model, evaluate_model
+
 
 def main(language):
     """
@@ -18,36 +19,40 @@ def main(language):
     codes and trains a model to predict the similarity. The model is then evaluated and the results are printed to the
     console.
     """
-    
-    if language.lower() == 'java':
-        dataset_path = 'data/dataset_java_full.csv'
-    elif language.lower() == 'c':
-        dataset_path = 'data/dataset_c_full.csv'
+
+    if language.lower() == "java":
+        dataset_path = "data/dataset_java_full.csv"
+    elif language.lower() == "c":
+        dataset_path = "data/dataset_c_full.csv"
     else:
         raise ValueError("Unsupported language. Use 'java' or 'c'.")
 
     df = load_dataset(dataset_path)
+    tokenizer, model, device = load_model()
 
-    code1_embeddings = vectorize_corpus(df['code1'])
-    code2_embeddings = vectorize_corpus(df['code2'])
+    code1_embeddings = vectorize_corpus(df["code1"].to_list(), tokenizer, model, device)
+    code2_embeddings = vectorize_corpus(df["code2"].to_list(), tokenizer, model, device)
 
-    df['similarity'] = [
+    df["similarity"] = [
         calculate_similarity(code1_embeddings[idx], code2_embeddings[idx])
         for idx in range(len(df))
     ]
 
     # Prepare data for the model
-    X = df[['similarity']]
-    y = df['similar']
+    X = df[["similarity"]]
+    y = df["similar"]
 
     model, X_test, y_test = train_model(X, y)
     report = evaluate_model(model, X_test, y_test)
 
     print(report)
 
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Code similarity detection system.")
-    parser.add_argument('--lang', type=str, required=True, help="Lenguaje: 'java' o 'c'")
+    parser.add_argument(
+        "--lang", type=str, required=True, help="Lenguaje: 'java' o 'c'"
+    )
     args = parser.parse_args()
 
     main(args.lang)
