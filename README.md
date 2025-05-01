@@ -120,8 +120,8 @@ python scripts/combine_datasets.py --lang c
 
 In the `data/` directory output files will be saved as:
 
-- `data/dataset_c_full.csv`: Contains **43 plagiarized pairs** and **26 non-plagiarized pairs**.
-- `data/dataset_java_full.csv`: Contains **213 plagiarized pairs** and **97 non-plagiarized pairs**.
+- `data/dataset_c_full.csv`: Contains **26 plagiarized pairs** and **26 non-plagiarized pairs**.
+- `data/dataset_java_full.csv`: Contains **84 plagiarized pairs** and **84 non-plagiarized pairs**.
 
 (These contain both plagiarized and non-plagiarized code pairs with labels 0 and 1.)
 
