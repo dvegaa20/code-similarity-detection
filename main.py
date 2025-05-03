@@ -38,7 +38,6 @@ def main(language):
         for idx in range(len(df))
     ]
 
-    # Prepare data for the model
     X = df[["similarity"]]
     y = df["similar"]
 

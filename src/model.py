@@ -21,6 +21,13 @@ def train_model(X, y):
         X_train,
         y_train,
         task="classification",
+        estimator_list=[
+            "lgbm",
+            "xgboost",
+            "rf",
+            "extra_tree",
+            "lrl1",
+        ],
         time_budget=3600,
         metric="f1",
         log_file_name="flaml.log",

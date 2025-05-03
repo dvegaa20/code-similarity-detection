@@ -3,6 +3,7 @@ import os
 import random
 import argparse
 
+
 def load_positive_dataset(filepath):
     """
     Loads a positive dataset from a CSV file.
@@ -20,6 +21,7 @@ def load_positive_dataset(filepath):
 
     return pd.read_csv(filepath)
 
+
 def list_source_files(source_folder, extension):
     """
     Lists all source files in the given folder with the given extension.
@@ -36,9 +38,10 @@ def list_source_files(source_folder, extension):
     list
         A list of file names with the given extension.
     """
-    
+
     files = os.listdir(source_folder)
     return [f for f in files if f.endswith(extension)]
+
 
 def read_source_code(filepath):
     """
@@ -54,9 +57,10 @@ def read_source_code(filepath):
     str
         The source code as a string.
     """
-    
-    with open(filepath, 'r', encoding='utf-8', errors='ignore') as file:
+
+    with open(filepath, "r", encoding="utf-8", errors="ignore") as file:
         return file.read()
+
 
 def generate_negatives(language):
     """
@@ -72,31 +76,30 @@ def generate_negatives(language):
     -------
     None
     """
-    
-    BASE_FOLDER = '/Users/diegovega/Developer/Code Similarity Project/fire14-source-code-training-dataset'
-    DATA_FOLDER = 'data'
 
-    if language.lower() == 'java':
-        source_folder = os.path.join(BASE_FOLDER, 'java')
-        positive_dataset_csv = os.path.join(DATA_FOLDER, 'dataset_java.csv')
-        output_csv = os.path.join(DATA_FOLDER, 'dataset_java_negatives.csv')
-        extension = '.java'
-    elif language.lower() == 'c':
-        source_folder = os.path.join(BASE_FOLDER, 'c')
-        positive_dataset_csv = os.path.join(DATA_FOLDER, 'dataset_c.csv')
-        output_csv = os.path.join(DATA_FOLDER, 'dataset_c_negatives.csv')
-        extension = '.c'
+    BASE_FOLDER = "/Users/diegovega/Developer/Code Similarity Project/fire14-source-code-training-dataset"
+    DATA_FOLDER = "data"
+
+    if language.lower() == "java":
+        source_folder = os.path.join(BASE_FOLDER, "java")
+        positive_dataset_csv = os.path.join(DATA_FOLDER, "dataset_java.csv")
+        output_csv = os.path.join(DATA_FOLDER, "dataset_java_negatives.csv")
+        extension = ".java"
+    elif language.lower() == "c":
+        source_folder = os.path.join(BASE_FOLDER, "c")
+        positive_dataset_csv = os.path.join(DATA_FOLDER, "dataset_c.csv")
+        output_csv = os.path.join(DATA_FOLDER, "dataset_c_negatives.csv")
+        extension = ".c"
     else:
         raise ValueError("Lenguaje no soportado. Usa 'java' o 'c'.")
 
     positives = load_positive_dataset(positive_dataset_csv)
 
-    # List source files
     files = list_source_files(source_folder, extension)
     print(f"Total files in {language.upper()}: {len(files)}")
 
     # Create a set of pairs already used to avoid repetition
-    positive_codes = set(zip(positives['code1'], positives['code2']))
+    positive_codes = set(zip(positives["code1"], positives["code2"]))
 
     data = []
     attempts = 0
@@ -115,13 +118,13 @@ def generate_negatives(language):
             code1 = read_source_code(path1)
             code2 = read_source_code(path2)
 
-            # Verify that this pair is not a duplicate or in positives
-            if (code1, code2) not in positive_codes and (code2, code1) not in positive_codes and code1 != code2:
-                data.append({
-                    'code1': code1,
-                    'code2': code2,
-                    'similar': 0
-                })
+            # Pair not a duplicate or in positives
+            if (
+                (code1, code2) not in positive_codes
+                and (code2, code1) not in positive_codes
+                and code1 != code2
+            ):
+                data.append({"code1": code1, "code2": code2, "similar": 0})
         except Exception as e:
             print(f"Error reading files: {file1}, {file2} — {e}")
 
@@ -130,11 +133,16 @@ def generate_negatives(language):
     df = pd.DataFrame(data)
     os.makedirs(DATA_FOLDER, exist_ok=True)
     df.to_csv(output_csv, index=False, quotechar='"')
-    print(f"Negative dataset successfully generated at {output_csv} with {len(df)} pairs!")
+    print(
+        f"Negative dataset successfully generated at {output_csv} with {len(df)} pairs!"
+    )
+
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Negative dataset generator for code similarity.")
-    parser.add_argument('--lang', type=str, required=True)
+    parser = argparse.ArgumentParser(
+        description="Negative dataset generator for code similarity."
+    )
+    parser.add_argument("--lang", type=str, required=True)
     args = parser.parse_args()
 
     generate_negatives(args.lang)
