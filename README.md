@@ -15,6 +15,10 @@ The project uses code datasets in Java and C, based on the SOCO dataset (FIRE 20
 │ ├── dataset_c_full.csv
 │ ├── dataset_java_full.csv
 │
+├── logs/
+│ ├── flaml_c.log
+│ ├── flaml_java.log
+|
 ├── scripts/
 │ ├── combine_datasets.py
 │ ├── generate_dataset.py
@@ -142,6 +146,5 @@ python main.py --lang java
 ```
 python main.py --lang c
 ```
-
 
 falta concluir
